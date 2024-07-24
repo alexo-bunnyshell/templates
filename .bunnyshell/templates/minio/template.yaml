@@ -5,7 +5,8 @@ icons: [ minio ]
 categories: [ 'databases' ]
 stack:
   packages:
-      - name: MinIO
+    - name: MinIO
       version: 'latest'
+
 discoverable: true
 l
