@@ -6,6 +6,6 @@ categories: [ 'databases' ]
 stack:
   packages:
     - name: MinIO
-      version: 'latest'
+      version: '2024.7.16'
 
 discoverable: true

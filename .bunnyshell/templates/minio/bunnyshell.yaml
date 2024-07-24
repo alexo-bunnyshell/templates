@@ -6,7 +6,7 @@ components:
         kind: Database
         name: minio
         dockerCompose:
-            image: bitnami/minio
+            image: bitnami/minio:2024.7.16
             ports:
                 - '9000:9000'
                 - '9001:9001'
