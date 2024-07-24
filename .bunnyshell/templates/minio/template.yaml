@@ -1,5 +1,5 @@
 name: MinIO
-description: An environment with a single component: MinIO 
+description: An environment with just a single MinIO component
 tags: [ minio, object-storage, databases ]
 icons: [ minio ]
 categories: [ 'databases' ]
