@@ -1,0 +1,8 @@
+name: MinIO
+description: An environment with a single component: MinIO 
+tags: [ minio, object-storage, databases ]
+icons: [ minio ]
+categories: [ 'databases' ]
+stack:
+  packages:
+discoverable: true
