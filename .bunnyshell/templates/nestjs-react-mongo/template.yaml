@@ -6,13 +6,13 @@ categories: [ framework ]
 stack:
   packages:
     - name: Node.js
-      version: '18'
+      version: '22'
     - name: NestJS
       version: '8'
     - name: React
-      version: '17'
+      version: '18'
     - name: Typescript
       version: '4.4'
     - name: MongoDB
-      version: '4.4'
+      version: '7.0'
 discoverable: true

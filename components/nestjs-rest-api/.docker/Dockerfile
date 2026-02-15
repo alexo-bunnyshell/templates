@@ -1,6 +1,6 @@
-FROM node:18-alpine3.17 as dev
+FROM node:22-alpine AS dev
 
-ENV NODE_ENV development
+ENV NODE_ENV=development
 
 # Needed for VS Code Remote Development
 RUN apk add musl libgcc libstdc++ git curl wget bash ca-certificates gcompat openssh-client
@@ -22,9 +22,9 @@ EXPOSE 9000
 CMD [ "npm", "run", "start:dev"]
 
 # build stage
-FROM node:18-alpine3.17 as build
+FROM node:22-alpine AS build
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 WORKDIR /app
 
@@ -40,9 +40,9 @@ RUN npm ci --only=production && npm cache clean --force
 
 
 # prod stage
-FROM node:18-alpine3.17 as prod
+FROM node:22-alpine AS prod
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 WORKDIR /app
 

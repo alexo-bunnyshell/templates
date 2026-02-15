@@ -1,12 +1,28 @@
 kind: Environment
 name: NestJS / React / MongoDB boilerplate
 type: primary
+environmentVariables:
+    MONGO_INITDB_DATABASE: books
 components:
+    -
+        kind: Database
+        name: mongo
+        dockerCompose:
+            environment:
+                MONGO_INITDB_DATABASE: '{{ env.vars.MONGO_INITDB_DATABASE }}'
+            image: 'mongo:7.0'
+            ports:
+                - '27017:27017'
+        volumes:
+            -
+                name: data-volume
+                mount: /data/db
+                subPath: ''
     -
         kind: Application
         name: api
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: nestjs-rest-api/v0.3.1
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/nestjs-rest-api
         dockerCompose:
             build:
@@ -21,24 +37,10 @@ components:
                 path: /
                 servicePort: 9000
     -
-        kind: Database
-        name: mongo
-        dockerCompose:
-            environment:
-                MONGO_INITDB_DATABASE: books
-            image: 'mongo:4.4'
-            ports:
-                - '27017:27017'
-        volumes:
-            -
-                name: data-volume
-                mount: /data/db
-                subPath: ''
-    -
         kind: Application
         name: frontend
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: react-books-app/v0.5.0
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/react-books-app
         dockerCompose:
             build:
@@ -46,7 +48,7 @@ components:
                 dockerfile: .docker/Dockerfile
                 target: dev
             environment:
-                REACT_APP_BASE_API: 'https://{{ components.api.ingress.hosts[0] }}'
+                REACT_APP_BASE_API: 'https://{{ components.api.ingress.hosts[0].hostname }}'
             ports:
                 - '8080:8080'
         hosts:
