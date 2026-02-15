@@ -118,7 +118,8 @@ components:
         MYSQL_PASSWORD: magento2
         MYSQL_ROOT_PASSWORD: magento2
         MYSQL_USER: magento2
-      image: 'mysql:8.0'
+      command: '--mysql-native-password=ON'
+      image: 'mysql:8.4'
       ports:
         - '3306:3306'
     volumes:
@@ -153,7 +154,7 @@ components:
     kind: Service
     name: redis
     dockerCompose:
-      image: 'redis:6.2'
+      image: 'redis:7.4-alpine'
       ports:
         - '6379:6379'
     volumes:
@@ -175,22 +176,17 @@ components:
         subPath: ''
   -
     kind: Service
-    name: mailhog
+    name: mailpit
     dockerCompose:
-      image: 'mailhog/mailhog:latest'
+      image: 'axllent/mailpit:latest'
       ports:
         - '1025:1025'
         - '8025:8025'
     hosts:
       -
-        hostname: 'mailhog-{{ env.base_domain }}'
+        hostname: 'mailpit-{{ env.base_domain }}'
         path: /
         servicePort: 8025
-    volumes:
-      -
-        name: mailhog-data
-        mount: /data/mailhog
-        subPath: ''
 volumes:
   -
     name: elasticsearch-data
@@ -206,10 +202,6 @@ volumes:
     type: disk
   -
     name: varnish-data
-    size: 100Mi
-    type: disk
-  -
-    name: mailhog-data
     size: 100Mi
     type: disk
   -

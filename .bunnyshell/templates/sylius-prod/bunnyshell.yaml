@@ -10,7 +10,7 @@ components:
   -
     kind: Application
     name: php
-    gitRepo: 'https://github.com/bunnyshell/templates.git'
+    gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
     gitBranch: 'sylius-prod-1.12/v0.1.0'
     gitApplicationPath: components/sylius-standard-edition-1.12
     dockerCompose:
@@ -21,8 +21,8 @@ components:
         APP_DEBUG: '0'
         APP_ENV: prod
         APP_SECRET: EDITME
-        DATABASE_URL: 'mysql://{{ env.vars.MYSQL_USER }}:{{ env.vars.MYSQL_PASSWORD }}@mysql/{{ env.vars.MYSQL_DATABASE }}?serverVersion=8.0'
-        MAILER_DSN: 'smtp://mailhog:1025'
+        DATABASE_URL: 'mysql://{{ env.vars.MYSQL_USER }}:{{ env.vars.MYSQL_PASSWORD }}@mysql/{{ env.vars.MYSQL_DATABASE }}?serverVersion=8.4'
+        MAILER_DSN: 'smtp://mailpit:1025'
         PHP_DATE_TIMEZONE: UTC
       ports:
         - '9000:9000'
@@ -63,7 +63,7 @@ components:
   -
     kind: SidecarContainer
     name: nginx
-    gitRepo: 'https://github.com/bunnyshell/templates.git'
+    gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
     gitBranch: 'sylius-prod-1.12/v0.1.0'
     gitApplicationPath: components/sylius-standard-edition-1.12
     dockerCompose:
@@ -82,7 +82,7 @@ components:
   -
     kind: InitContainer
     name: init-migrations
-    gitRepo: 'https://github.com/bunnyshell/templates.git'
+    gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
     gitBranch: 'sylius-prod-1.12/v0.1.0'
     gitApplicationPath: components/sylius-standard-edition-1.12
     dockerCompose:
@@ -93,8 +93,8 @@ components:
         APP_DEBUG: '0'
         APP_ENV: prod
         APP_SECRET: EDITME
-        BASE_DOMAIN: '{{ components.php.ingress.hosts[0] }}'
-        DATABASE_URL: 'mysql://{{ env.vars.MYSQL_USER }}:{{ env.vars.MYSQL_PASSWORD }}@mysql/{{ env.vars.MYSQL_DATABASE }}?serverVersion=8.0'
+        BASE_DOMAIN: '{{ components.php.ingress.hosts[0].hostname }}'
+        DATABASE_URL: 'mysql://{{ env.vars.MYSQL_USER }}:{{ env.vars.MYSQL_PASSWORD }}@mysql/{{ env.vars.MYSQL_DATABASE }}?serverVersion=8.4'
         LOAD_FIXTURES: '1'
         PHP_DATE_TIMEZONE: UTC
     volumes:
@@ -108,8 +108,8 @@ components:
     dockerCompose:
       cap_add:
         - SYS_NICE
-      command: '--default-authentication-plugin=mysql_native_password --log_bin_trust_function_creators=1'
-      image: 'mysql:8.0'
+      command: '--mysql-native-password=ON --log_bin_trust_function_creators=1'
+      image: 'mysql:8.4'
       ports:
         - '3306:3306'
     volumes:
@@ -119,17 +119,15 @@ components:
         subPath: ''
   -
     kind: Service
-    name: mailhog
+    name: mailpit
     dockerCompose:
-      environment:
-        MH_STORAGE: maildir
-      image: 'mailhog/mailhog:latest'
+      image: 'axllent/mailpit:latest'
       ports:
         - '8025:8025'
         - '1025:1025'
     hosts:
       -
-        hostname: 'mailhog-{{ env.base_domain }}'
+        hostname: 'mailpit-{{ env.base_domain }}'
         path: /
         servicePort: 8025
 volumes:

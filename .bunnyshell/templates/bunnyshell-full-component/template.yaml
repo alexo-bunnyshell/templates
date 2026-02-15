@@ -1,0 +1,8 @@
+name: Bunnyshell Full Component
+description: Example of an advanced Bunnyshell component that uses all the features available 
+tags: [ bunnyshell, design-patthers ]
+icons: [ bunnyshell ]
+categories: [ 'bunnyshell-design-patterns' ]
+stack:
+  packages:
+discoverable: true
