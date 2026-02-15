@@ -1,10 +1,10 @@
 # dev stage
-FROM node:22-alpine as dev
+FROM node:22-alpine AS dev
 
-ENV NODE_ENV development
+ENV NODE_ENV=development
 
 ARG REACT_APP_BASE_API
-ENV REACT_APP_BASE_API $REACT_APP_BASE_API
+ENV REACT_APP_BASE_API=$REACT_APP_BASE_API
 
 # setup workdir (next commands will run under this context, but also the running container will inherit this - if not overriden at runtime)
 WORKDIR /usr/src/app/
