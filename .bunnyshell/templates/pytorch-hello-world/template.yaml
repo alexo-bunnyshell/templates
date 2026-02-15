@@ -6,9 +6,9 @@ categories: [ 'ai/ml' ]
 stack:
   packages:
     - name: Python
-      version: '3.8.13'
+      version: '3.11'
     - name: PyTorch
-      version: '1.11.0'
+      version: '2.5.1'
     - name: Flask
-      version: '2.0.2'
+      version: '3.1'
 discoverable: true

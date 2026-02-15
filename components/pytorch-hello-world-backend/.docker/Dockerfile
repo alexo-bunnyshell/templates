@@ -1,6 +1,5 @@
-FROM bitnami/pytorch:1.11.0
+FROM python:3.11-slim
 
-USER 0
 RUN mkdir /.cache && chmod 777 /.cache
 
 WORKDIR /app

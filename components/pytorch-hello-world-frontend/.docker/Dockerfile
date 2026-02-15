@@ -1,4 +1,4 @@
-FROM nginx:1.21.3-alpine
+FROM nginx:1.27-alpine
 
 COPY .docker/files/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/files/entrypoint.sh  /usr/share/entrypoint.sh

@@ -37,7 +37,7 @@ components:
                 context: ./components/pytorch-hello-world-frontend
                 dockerfile: .docker/Dockerfile
             environment:
-                API_URL: 'https://{{ components.backend.ingress.hosts[0] }}'
+                API_URL: 'https://{{ components.backend.ingress.hosts[0].hostname }}'
             ports:
                 - '80:80'
         hosts:
