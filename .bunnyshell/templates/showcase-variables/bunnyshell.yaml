@@ -1,7 +1,9 @@
+kind: Environment
 name: Showcase - Template Variables
+type: primary
 templateVariables:
     verbose: false
-    version: '1.23.1'
+    version: '1.27.3'
     host: 'localhost'
     port: 80
     fib: 1
@@ -16,3 +18,10 @@ components:
                 NGINX_HOST: '{{ template.vars.host }}'
                 NGINX_PORT: '{{ template.vars.port }}'
                 FIB_SEQ: '{{ template.vars.fib }}'
+            ports:
+                - '80:80'
+        hosts:
+            -
+                hostname: 'web-{{ env.base_domain }}'
+                path: /
+                servicePort: 80

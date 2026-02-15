@@ -6,7 +6,7 @@ categories: [ 'bunnyshell design patterns' ]
 stack:
   packages:
     - name: Java
-      version: '17'
+      version: '21'
     - name: Spring Boot
       version: '3.1'
     - name: Gradle
@@ -18,5 +18,5 @@ stack:
     - name: Typescript
       version: '4.4'
     - name: MySQL
-      version: '4.4'
+      version: '8.4'
 discoverable: true

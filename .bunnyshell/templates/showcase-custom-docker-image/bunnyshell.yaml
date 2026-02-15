@@ -1,6 +1,11 @@
 kind: Environment
 name: Showcase - CustomDockerImage
 type: primary
+environmentVariables:
+    MYSQL_DATABASE: bunny_books
+    MYSQL_USER: books
+    MYSQL_PASSWORD: need-to-replace
+    MYSQL_ROOT_PASSWORD: need-to-replace
 components:
     -
         kind: CustomDockerImage
@@ -8,10 +13,28 @@ components:
         gitRepo: 'https://github.com/bunnyshell/templates.git'
         gitBranch: main
         gitApplicationPath: components/springboot-rest-api-gradle
-        runnerImage: 'openjdk:17-jdk-alpine'
+        runnerImage: 'eclipse-temurin:21-jdk-alpine'
         build:
             - 'cd ./components/springboot-rest-api-gradle'
             - './gradlew :jib --image="$BNS_IMAGE_FULL_NAME" -Djib.to.auth.username="$BNS_IMAGE_REGISTRY_USERNAME" -Djib.to.auth.password="$BNS_IMAGE_REGISTRY_PASSWORD" -Dorg.gradle.console=plain'
+    -
+        kind: Database
+        name: db
+        dockerCompose:
+            command: '--mysql-native-password=ON'
+            environment:
+                MYSQL_DATABASE: '{{ env.vars.MYSQL_DATABASE }}'
+                MYSQL_PASSWORD: '{{ env.vars.MYSQL_PASSWORD }}'
+                MYSQL_ROOT_PASSWORD: '{{ env.vars.MYSQL_ROOT_PASSWORD }}'
+                MYSQL_USER: '{{ env.vars.MYSQL_USER }}'
+            image: 'mysql:8.4'
+            ports:
+                - '3306:3306'
+        volumes:
+            -
+                name: db-data
+                mount: /var/lib/mysql
+                subPath: ''
     -
         kind: Application
         name: api
@@ -21,11 +44,11 @@ components:
         dockerCompose:
             image: '{{ components.api-image.image }}'
             environment:
-                DATABASE_DBNAME: bunny_books
+                DATABASE_DBNAME: '{{ env.vars.MYSQL_DATABASE }}'
                 DATABASE_HOST: db
-                DATABASE_PASSWORD: need-to-replace
+                DATABASE_PASSWORD: '{{ env.vars.MYSQL_PASSWORD }}'
                 DATABASE_PORT: '3306'
-                DATABASE_USER: books
+                DATABASE_USER: '{{ env.vars.MYSQL_USER }}'
                 FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
             ports:
                 - '9000:9000'
@@ -36,24 +59,6 @@ components:
                 servicePort: 9000
         dependsOn:
             - api-image
-    -
-        kind: Database
-        name: db
-        dockerCompose:
-            command: '--default-authentication-plugin=mysql_native_password'
-            environment:
-                MYSQL_DATABASE: bunny_books
-                MYSQL_PASSWORD: need-to-replace
-                MYSQL_ROOT_PASSWORD: need-to-replace
-                MYSQL_USER: books
-            image: 'mysql:8.0.32'
-            ports:
-                - '3306:3306'
-        volumes:
-            -
-                name: db-data
-                mount: /var/lib/mysql
-                subPath: ''
     -
         kind: Application
         name: frontend

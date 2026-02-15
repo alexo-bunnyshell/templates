@@ -6,7 +6,7 @@ categories: [ framework ]
 stack:
   packages:
     - name: Node.js
-      version: '18'
+      version: '22'
     - name: Express
       version: '4'
     - name: Angular
@@ -14,5 +14,5 @@ stack:
     - name: Typescript
       version: '4.4'
     - name: PostgreSQL
-      version: '15.2'
+      version: '17'
 discoverable: true

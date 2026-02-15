@@ -1,7 +1,27 @@
 kind: Environment
 name: Express / Angular / PostgreSQL boilerplate
 type: primary
+environmentVariables:
+    POSTGRES_DB: bunny_books
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: need-to-replace
 components:
+    -
+        kind: Database
+        name: db
+        dockerCompose:
+            environment:
+                POSTGRES_DB: '{{ env.vars.POSTGRES_DB }}'
+                POSTGRES_PASSWORD: '{{ env.vars.POSTGRES_PASSWORD }}'
+                POSTGRES_USER: '{{ env.vars.POSTGRES_USER }}'
+            image: 'postgres:17-alpine'
+            ports:
+                - '5432:5432'
+        volumes:
+            -
+                name: data-volume
+                mount: /var/lib/postgresql/data
+                subPath: ''
     -
         kind: Application
         name: api
@@ -15,10 +35,10 @@ components:
                 target: dev
             environment:
                 FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
-                POSTGRES_DB: bunny_books
+                POSTGRES_DB: '{{ env.vars.POSTGRES_DB }}'
                 POSTGRES_HOST: db
-                POSTGRES_PASSWORD: need-to-replace
-                POSTGRES_USER: postgres
+                POSTGRES_PASSWORD: '{{ env.vars.POSTGRES_PASSWORD }}'
+                POSTGRES_USER: '{{ env.vars.POSTGRES_USER }}'
             ports:
                 - '3080:3080'
         hosts:
@@ -26,22 +46,6 @@ components:
                 hostname: 'api-{{ env.base_domain }}'
                 path: /
                 servicePort: 3080
-    -
-        kind: Database
-        name: db
-        dockerCompose:
-            environment:
-                POSTGRES_DB: bunny_books
-                POSTGRES_PASSWORD: need-to-replace
-                POSTGRES_USER: postgres
-            image: postgres:15.2-alpine3.17
-            ports:
-                - '5432:5432'
-        volumes:
-            -
-                name: data-volume
-                mount: /var/lib/postgresql/data
-                subPath: ''
     -
         kind: Application
         name: frontend

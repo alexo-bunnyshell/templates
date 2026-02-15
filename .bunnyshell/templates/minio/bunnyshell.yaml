@@ -1,24 +1,27 @@
 kind: Environment
 name: minio
 type: primary
+environmentVariables:
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: minioadmin-secret-change-me
 components:
     -
         kind: Database
         name: minio
         dockerCompose:
-            image: bitnami/minio:2024.7.16
+            image: 'minio/minio:RELEASE.2025-02-07T23-21-09Z'
             ports:
                 - '9000:9000'
                 - '9001:9001'
             environment:
                 MINIO_BROWSER_REDIRECT_URL: 'https://minio-console-{{ env.base_domain }}'
-                MINIO_ROOT_PASSWORD: miniorootpasswordasdf
-                MINIO_ROOT_USER: root
+                MINIO_ROOT_PASSWORD: '{{ env.vars.MINIO_ROOT_PASSWORD }}'
+                MINIO_ROOT_USER: '{{ env.vars.MINIO_ROOT_USER }}'
                 MINIO_SERVER_URL: 'https://minio-{{ env.base_domain }}'
             command:
                 - minio
                 - server
-                - /data/minio
+                - /data
                 - '--console-address'
                 - ':9001'
         hosts:
@@ -32,16 +35,14 @@ components:
                 servicePort: 9000
         volumes:
             -
-                name: minio
-                mount: /data/minio
+                name: minio-data
+                mount: /data
                 subPath: ''
-
 volumes:
     -
-        name: minio
+        name: minio-data
         size: 5Gi
         type: disk
-
 security:
     access:
         allowedIps:

@@ -1,5 +1,5 @@
 # dev stage
-FROM node:16-alpine as dev
+FROM node:22-alpine as dev
 
 ENV NODE_ENV development
 
@@ -32,7 +32,7 @@ FROM dev AS build
 RUN npm run build
 
 # prod stage
-FROM nginx:1.21.3-alpine AS prod
+FROM nginx:1.27-alpine AS prod
 
 # Copy the built app to the Nginx HTML directory
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
