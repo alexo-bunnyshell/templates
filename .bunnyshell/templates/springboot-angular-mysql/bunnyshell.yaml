@@ -1,43 +1,23 @@
 kind: Environment
 name: Spring Boot / Angular / MySQL boilerplate
 type: primary
+environmentVariables:
+    MYSQL_DATABASE: bunny_books
+    MYSQL_USER: books
+    MYSQL_PASSWORD: need-to-replace
+    MYSQL_ROOT_PASSWORD: need-to-replace
 components:
-    -
-        kind: Application
-        name: api
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: springboot-rest-api/v0.1.0
-        gitApplicationPath: components/springboot-rest-api
-        dockerCompose:
-            build:
-                context: ./components/springboot-rest-api
-                dockerfile: .docker/Dockerfile
-                target: dev
-            environment:
-                DATABASE_DBNAME: bunny_books
-                DATABASE_HOST: db
-                DATABASE_PASSWORD: need-to-replace
-                DATABASE_PORT: '3306'
-                DATABASE_USER: books
-                FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
-            ports:
-                - '9000:9000'
-        hosts:
-            -
-                hostname: 'api-{{ env.base_domain }}'
-                path: /
-                servicePort: 9000
     -
         kind: Database
         name: db
         dockerCompose:
-            command: '--default-authentication-plugin=mysql_native_password'
+            command: '--mysql-native-password=ON'
             environment:
-                MYSQL_DATABASE: bunny_books
-                MYSQL_PASSWORD: need-to-replace
-                MYSQL_ROOT_PASSWORD: need-to-replace
-                MYSQL_USER: books
-            image: 'mysql:8.0.32'
+                MYSQL_DATABASE: '{{ env.vars.MYSQL_DATABASE }}'
+                MYSQL_PASSWORD: '{{ env.vars.MYSQL_PASSWORD }}'
+                MYSQL_ROOT_PASSWORD: '{{ env.vars.MYSQL_ROOT_PASSWORD }}'
+                MYSQL_USER: '{{ env.vars.MYSQL_USER }}'
+            image: 'mysql:8.4'
             ports:
                 - '3306:3306'
         volumes:
@@ -47,9 +27,34 @@ components:
                 subPath: ''
     -
         kind: Application
+        name: api
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
+        gitApplicationPath: components/springboot-rest-api
+        dockerCompose:
+            build:
+                context: ./components/springboot-rest-api
+                dockerfile: .docker/Dockerfile
+                target: dev
+            environment:
+                DATABASE_DBNAME: '{{ env.vars.MYSQL_DATABASE }}'
+                DATABASE_HOST: db
+                DATABASE_PASSWORD: '{{ env.vars.MYSQL_PASSWORD }}'
+                DATABASE_PORT: '3306'
+                DATABASE_USER: '{{ env.vars.MYSQL_USER }}'
+                FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
+            ports:
+                - '9000:9000'
+        hosts:
+            -
+                hostname: 'api-{{ env.base_domain }}'
+                path: /
+                servicePort: 9000
+    -
+        kind: Application
         name: frontend
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: angular-books-app/v0.3.0
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/angular-books-app
         dockerCompose:
             build:

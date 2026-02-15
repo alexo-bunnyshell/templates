@@ -1,18 +1,18 @@
 name: Spring Boot + React + MySQL
-description: This is a boilerplate for creating a new environment using Java 17, Spring Boot, React (with Typescript) and MySQL. It contains a basic CRUD example to demonstrate how components connect and make it easy to start with.
+description: This is a boilerplate for creating a new environment using Java 21, Spring Boot, React (with Typescript) and MySQL. It contains a basic CRUD example to demonstrate how components connect and make it easy to start with.
 tags: [ java, springboot, react, typescript, mysql ]
 icons: [ java, springboot, react, typescript, mysql ]
 categories: [ framework ]
 stack:
   packages:
     - name: Java
-      version: '17'
+      version: '21'
     - name: Spring Boot
       version: '3.1'
     - name: React
-      version: '17'
+      version: '18'
     - name: Typescript
-      version: '4.4'
+      version: '4.9'
     - name: MySQL
-      version: '4.4'
+      version: '8.4'
 discoverable: true

@@ -1,18 +1,23 @@
 kind: Environment
 name: demo-books-symfony
 type: primary
+environmentVariables:
+    MYSQL_DATABASE: symfony
+    MYSQL_USER: symfony_user
+    MYSQL_PASSWORD: symfony_pass
+    MYSQL_ROOT_PASSWORD: ssap_toor
 components:
     -
         kind: Database
         name: database
         dockerCompose:
-            command: '--default-authentication-plugin=mysql_native_password'
+            command: '--mysql-native-password=ON'
             environment:
-                MYSQL_DATABASE: symfony
-                MYSQL_PASSWORD: symfony_pass
-                MYSQL_ROOT_PASSWORD: ssap_toor
-                MYSQL_USER: symfony_user
-            image: 'mysql:8.0.29'
+                MYSQL_DATABASE: '{{ env.vars.MYSQL_DATABASE }}'
+                MYSQL_PASSWORD: '{{ env.vars.MYSQL_PASSWORD }}'
+                MYSQL_ROOT_PASSWORD: '{{ env.vars.MYSQL_ROOT_PASSWORD }}'
+                MYSQL_USER: '{{ env.vars.MYSQL_USER }}'
+            image: 'mysql:8.4'
             ports:
                 - '3306:3306'
         volumes:
@@ -23,8 +28,8 @@ components:
     -
         kind: SidecarContainer
         name: nginx
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: symfony-rest-api/v0.1.0
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/symfony-rest-api/.docker/nginx
         dockerCompose:
             build:
@@ -36,8 +41,8 @@ components:
     -
         kind: Application
         name: symfony
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: symfony-rest-api/v0.1.0
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/symfony-rest-api
         dockerCompose:
             build:
@@ -45,7 +50,7 @@ components:
                 dockerfile: .docker/php/Dockerfile
                 target: dev
             environment:
-                DATABASE_URL: 'mysql://symfony_user:symfony_pass@database:3306/symfony?serverVersion=8&charset=utf8mb4'
+                DATABASE_URL: 'mysql://{{ env.vars.MYSQL_USER }}:{{ env.vars.MYSQL_PASSWORD }}@database:3306/{{ env.vars.MYSQL_DATABASE }}?serverVersion=8.4&charset=utf8mb4'
                 FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
                 PHP_MEMORY_LIMIT: '1G'
                 PHP_OPCACHE_ENABLE: '0'
@@ -89,8 +94,8 @@ components:
     -
         kind: Application
         name: frontend
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: react-books-app/v0.5.0
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/react-books-app
         dockerCompose:
             build:
@@ -98,7 +103,7 @@ components:
                 dockerfile: .docker/Dockerfile
                 target: dev
             environment:
-                REACT_APP_BASE_API: 'https://{{ components.symfony.ingress.hosts[0] }}'
+                REACT_APP_BASE_API: 'https://{{ components.symfony.ingress.hosts[0].hostname }}'
             ports:
                 - '8080:8080'
         hosts:

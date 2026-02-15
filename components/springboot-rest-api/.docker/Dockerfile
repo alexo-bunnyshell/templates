@@ -1,5 +1,5 @@
 # Dev stage
-FROM eclipse-temurin:17-jdk-alpine AS dev
+FROM eclipse-temurin:21-jdk-alpine AS dev
 
 # setup workdir (next commands will run under this context, but also the running container will inherit this - if not overriden at runtime)
 WORKDIR /app
@@ -29,7 +29,7 @@ RUN ./mvnw clean package -Dmaven.test.skip
 
 
 # Prod stage
-FROM eclipse-temurin:19-jdk-alpine AS prod
+FROM eclipse-temurin:21-jdk-alpine AS prod
 
 WORKDIR /app
 
