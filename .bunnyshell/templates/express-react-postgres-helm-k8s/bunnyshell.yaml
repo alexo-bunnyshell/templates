@@ -6,7 +6,7 @@ environmentVariables:
     FRONTEND_URL: 'https://frontend-{{ env.base_domain }}'
     FRONTEND_URL_NO_SCHEME: 'frontend-{{ env.base_domain }}'
     POSTGRES_DB: bunny_books
-    POSTGRES_PASSWORD: mysecretpassword
+    POSTGRES_PASSWORD: need-to-replace
     POSTGRES_USER: postgres
 components:
     -
@@ -30,7 +30,7 @@ components:
     -
         kind: Helm
         name: postgres
-        runnerImage: 'dtzar/helm-kubectl:3.8.2'
+        runnerImage: 'dtzar/helm-kubectl:3.16.0'
         deploy:
             - |
                 cat << EOF > my_values.yaml
@@ -41,7 +41,7 @@ components:
                         database: {{ env.vars.POSTGRES_DB }}
                 EOF
             - 'helm repo add bitnami https://charts.bitnami.com/bitnami'
-            - 'helm upgrade --install --namespace {{ env.k8s.namespace }} --post-renderer /bns/helpers/helm/add_labels/kustomize -f my_values.yaml postgres bitnami/postgresql --version 11.9.11'
+            - 'helm upgrade --install --namespace {{ env.k8s.namespace }} --post-renderer /bns/helpers/helm/add_labels/kustomize -f my_values.yaml postgres bitnami/postgresql --version 16.4.1'
             - |
                 POSTGRES_HOST="postgres-postgresql.{{ env.k8s.namespace }}.svc.cluster.local"
         destroy:
@@ -58,7 +58,7 @@ components:
         gitRepo: 'https://github.com/bunnyshell/templates.git'
         gitBranch: express-rest-api/v0.3.0
         gitApplicationPath: /components/express-rest-api
-        runnerImage: 'dtzar/helm-kubectl:3.8.2'
+        runnerImage: 'dtzar/helm-kubectl:3.16.0'
         deploy:
             - |
                 cat << EOF > my_values.yaml
@@ -90,7 +90,7 @@ components:
         gitRepo: 'https://github.com/bunnyshell/templates.git'
         gitBranch: react-books-app/v0.6.0
         gitApplicationPath: /components/react-books-app
-        runnerImage: 'alpine/k8s:1.22.15'
+        runnerImage: 'alpine/k8s:1.31.0'
         deploy:
             - 'cd ./components/react-books-app/k8s-manifests'
             - 'kustomize create --autodetect --recursive --labels=app.kubernetes.io/instance-frontend:bns,app.kubernetes.io/part-of:env-{{ env.unique }} --namespace {{ env.k8s.namespace }}'

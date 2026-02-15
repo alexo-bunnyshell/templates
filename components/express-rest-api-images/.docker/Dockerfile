@@ -1,5 +1,5 @@
 # dev stage
-FROM node:18-alpine3.17 as dev
+FROM node:22-alpine AS dev
 
 ENV NODE_ENV=development
 
@@ -24,7 +24,7 @@ EXPOSE 3080
 CMD ["npm", "run", "start:dev"]
 
 # production stage
-FROM node:18-alpine3.17 as prod
+FROM node:22-alpine AS prod
 
 ENV NODE_ENV=production
 

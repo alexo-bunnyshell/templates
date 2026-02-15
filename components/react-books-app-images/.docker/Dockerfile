@@ -1,10 +1,10 @@
 # dev stage
-FROM node:16-alpine as dev
+FROM node:22-alpine AS dev
 
-ENV NODE_ENV development
+ENV NODE_ENV=development
 
 ARG REACT_APP_BASE_API
-ENV REACT_APP_BASE_API $REACT_APP_BASE_API
+ENV REACT_APP_BASE_API=$REACT_APP_BASE_API
 
 # setup workdir (next commands will run under this context, but also the running container will inherit this - if not overriden at runtime)
 WORKDIR /usr/src/app/
@@ -32,7 +32,7 @@ FROM dev AS build
 RUN npm run build
 
 # prod stage
-FROM nginx:1.21.3-alpine AS prod
+FROM nginx:1.27-alpine AS prod
 
 # Copy the built app to the Nginx HTML directory
 COPY --from=build /usr/src/app/build /usr/share/nginx/html

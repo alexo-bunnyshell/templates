@@ -1,40 +1,20 @@
 kind: Environment
 name: Express / React / PostgreSQL boilerplate
 type: primary
+environmentVariables:
+    POSTGRES_DB: bunny_books
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: need-to-replace
 components:
-    -
-        kind: Application
-        name: api
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: express-rest-api/v0.2.0
-        gitApplicationPath: components/express-rest-api
-        dockerCompose:
-            build:
-                context: ./components/express-rest-api
-                dockerfile: .docker/Dockerfile
-                target: dev
-            environment:
-                FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
-                POSTGRES_DB: bunny_books
-                POSTGRES_HOST: db
-                POSTGRES_PASSWORD: need-to-replace
-                POSTGRES_USER: postgres
-            ports:
-                - '3080:3080'
-        hosts:
-            -
-                hostname: 'api-{{ env.base_domain }}'
-                path: /
-                servicePort: 3080
     -
         kind: Database
         name: db
         dockerCompose:
             environment:
-                POSTGRES_DB: bunny_books
-                POSTGRES_PASSWORD: need-to-replace
-                POSTGRES_USER: postgres
-            image: postgres:15.2-alpine3.17
+                POSTGRES_DB: '{{ env.vars.POSTGRES_DB }}'
+                POSTGRES_PASSWORD: '{{ env.vars.POSTGRES_PASSWORD }}'
+                POSTGRES_USER: '{{ env.vars.POSTGRES_USER }}'
+            image: 'postgres:17-alpine'
             ports:
                 - '5432:5432'
         volumes:
@@ -44,9 +24,33 @@ components:
                 subPath: ''
     -
         kind: Application
+        name: api
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
+        gitApplicationPath: components/express-rest-api
+        dockerCompose:
+            build:
+                context: ./components/express-rest-api
+                dockerfile: .docker/Dockerfile
+                target: dev
+            environment:
+                FRONTEND_URL: 'https://{{ components.frontend.ingress.hosts[0].hostname }}'
+                POSTGRES_DB: '{{ env.vars.POSTGRES_DB }}'
+                POSTGRES_HOST: db
+                POSTGRES_PASSWORD: '{{ env.vars.POSTGRES_PASSWORD }}'
+                POSTGRES_USER: '{{ env.vars.POSTGRES_USER }}'
+            ports:
+                - '3080:3080'
+        hosts:
+            -
+                hostname: 'api-{{ env.base_domain }}'
+                path: /
+                servicePort: 3080
+    -
+        kind: Application
         name: frontend
-        gitRepo: 'https://github.com/bunnyshell/templates.git'
-        gitBranch: react-books-app/v0.5.0
+        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitBranch: update-templates-2025
         gitApplicationPath: components/react-books-app
         dockerCompose:
             build:
@@ -54,7 +58,7 @@ components:
                 dockerfile: .docker/Dockerfile
                 target: dev
             environment:
-                REACT_APP_BASE_API: 'https://{{ components.api.ingress.hosts[0] }}'
+                REACT_APP_BASE_API: 'https://{{ components.api.ingress.hosts[0].hostname }}'
             ports:
                 - '8080:8080'
         hosts:
