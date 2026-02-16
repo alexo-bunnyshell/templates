@@ -1,12 +1,12 @@
 # the different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/compose/compose-file/#target
 
-ARG PHP_VERSION=8.1
-ARG NODE_VERSION=16
-ARG NGINX_VERSION=1.21
-ARG ALPINE_VERSION=3.15
-ARG COMPOSER_VERSION=2.4
-ARG PHP_EXTENSION_INSTALLER_VERSION=latest
+ARG PHP_VERSION=8.3
+ARG NODE_VERSION=20
+ARG NGINX_VERSION=1.27
+ARG ALPINE_VERSION=3.20
+ARG COMPOSER_VERSION=2.7
+ARG PHP_EXTENSION_INSTALLER_VERSION=2.7
 
 FROM composer:${COMPOSER_VERSION} AS composer
 
@@ -38,6 +38,7 @@ COPY config/preload.php /srv/sylius/config/preload.php
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
 RUN set -eux; \
     composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"

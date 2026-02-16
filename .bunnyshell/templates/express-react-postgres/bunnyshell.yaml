@@ -25,7 +25,7 @@ components:
     -
         kind: Application
         name: api
-        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitRepo: 'https://github.com/bunnyshell/templates.git'
         gitBranch: update-templates-2025
         gitApplicationPath: components/express-rest-api
         dockerCompose:
@@ -49,7 +49,7 @@ components:
     -
         kind: Application
         name: frontend
-        gitRepo: 'https://github.com/alexo-bunnyshell/templates.git'
+        gitRepo: 'https://github.com/bunnyshell/templates.git'
         gitBranch: update-templates-2025
         gitApplicationPath: components/react-books-app
         dockerCompose:
